@@ -1,6 +1,3 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
-setup(
-    packages=find_packages(),
-    namespace_packages=['metabase']
-)
+setup()

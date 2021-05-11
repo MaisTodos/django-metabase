@@ -4,6 +4,7 @@ import time
 import jwt
 from django import template
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -15,7 +16,16 @@ METABASE_DEFAULT_WIDTH = getattr(settings, "METABASE_DEFAULT_WIDTH", "100%")
 METABASE_DEFAULT_EXPIRATION = getattr(settings, "METABASE_DEFAULT_EXPIRATION", (60 * 60 * 6))
 
 
-@register.inclusion_tag("metabase/dashboard.html", takes_context=True)
+METABASE_IFRAME = """<iframe
+    src="{{ iframeUrl }}"
+    frameborder="0"
+    width="{{ width }}"
+    height="{{ height }}"
+    allowtransparency
+></iframe>"""
+
+
+@register.simple_tag
 def render_metabase_dashboard(context, dashboard, *args, **kwargs):
 
     payload = {
@@ -31,8 +41,14 @@ def render_metabase_dashboard(context, dashboard, *args, **kwargs):
     iframeUrl = (
         METABASE_SITE_URL + "/embed/dashboard/" + token + "#bordered=true&titled=false"
     )
-    return {
+
+    data = {
         "iframeUrl": iframeUrl,
         "width": width,
         "height": height,
     }
+
+    template = Template(METABASE_IFRAME)
+    context = Context(data)
+    iframe = template.render(context)
+    return mark_safe(iframe)

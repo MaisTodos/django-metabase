@@ -5,6 +5,7 @@ import jwt
 from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
+from django.template import Context, Template
 
 register = template.Library()
 
@@ -16,7 +17,7 @@ METABASE_DEFAULT_WIDTH = getattr(settings, "METABASE_DEFAULT_WIDTH", "100%")
 METABASE_DEFAULT_EXPIRATION = getattr(settings, "METABASE_DEFAULT_EXPIRATION", (60 * 60 * 6))
 
 
-METABASE_IFRAME = """<iframe
+METABASE_BASE_IFRAME = """<iframe
     src="{{ iframeUrl }}"
     frameborder="0"
     width="{{ width }}"
@@ -48,7 +49,7 @@ def render_metabase_dashboard(context, dashboard, *args, **kwargs):
         "height": height,
     }
 
-    template = Template(METABASE_IFRAME)
+    template = Template(METABASE_BASE_IFRAME)
     context = Context(data)
     iframe = template.render(context)
     return mark_safe(iframe)

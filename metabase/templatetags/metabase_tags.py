@@ -1,4 +1,3 @@
-
 import time
 
 import jwt
@@ -14,7 +13,9 @@ METABASE_SECRECT_KEY = getattr(settings, "METABASE_SECRECT_KEY", "")
 METABASE_SITE_URL = getattr(settings, "METABASE_SITE_URL", "")
 METABASE_DEFAULT_HEIGHT = getattr(settings, "METABASE_DEFAULT_HEIGHT", "800px")
 METABASE_DEFAULT_WIDTH = getattr(settings, "METABASE_DEFAULT_WIDTH", "100%")
-METABASE_DEFAULT_EXPIRATION = getattr(settings, "METABASE_DEFAULT_EXPIRATION", (60 * 60 * 6))
+METABASE_DEFAULT_EXPIRATION = getattr(
+    settings, "METABASE_DEFAULT_EXPIRATION", (60 * 60 * 6)
+)
 
 
 METABASE_BASE_IFRAME = """<iframe
@@ -31,7 +32,7 @@ def render_metabase_dashboard(context, dashboard, *args, **kwargs):
 
     payload = {
         "resource": {"dashboard": int(dashboard)},
-        "params": {},
+        "params": kwargs.get("params", {}),
         "exp": round(time.time()) + METABASE_DEFAULT_EXPIRATION,
     }
 

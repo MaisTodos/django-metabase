@@ -16,6 +16,7 @@ METABASE_DEFAULT_WIDTH = getattr(settings, "METABASE_DEFAULT_WIDTH", "100%")
 METABASE_DEFAULT_EXPIRATION = getattr(
     settings, "METABASE_DEFAULT_EXPIRATION", (60 * 60 * 6)
 )
+METABASE_PARAMS_KEYS = getattr(settings, "METABASE_PARAMS_KEYS", [])
 
 
 METABASE_BASE_IFRAME = """<iframe
@@ -32,7 +33,9 @@ def render_metabase_dashboard(context, dashboard, *args, **kwargs):
 
     payload = {
         "resource": {"dashboard": int(dashboard)},
-        "params": kwargs.get("params", {}),
+        "params": {
+            key: value for key, value in kwargs.items() if key in METABASE_PARAMS_KEYS
+        },
         "exp": round(time.time()) + METABASE_DEFAULT_EXPIRATION,
     }
 
